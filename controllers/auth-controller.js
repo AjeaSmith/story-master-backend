@@ -1,9 +1,13 @@
+const auth = require('../services/auth-service');
+
 const register = async (req, res, next) => {
-	const { name, username, password } = req.body;
+	const { email, username, password } = req.body;
 	try {
 		// services to register user
-
-		res.sendStatus(201);
+		const { token } = auth.register(email, username, password);
+		res.status(201).json({
+			token: token,
+		});
 		next();
 	} catch (e) {
 		console.log(e.message);
