@@ -4,9 +4,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const InitalDBServer = require('./config/db');
 
+const auth = require('./routes/auth-route');
+
 // middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use('/auth', auth);
 
 // routes
 app.get('/', (req, res) => {
