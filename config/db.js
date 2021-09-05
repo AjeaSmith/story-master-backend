@@ -1,19 +1,14 @@
 const { MongoClient } = require('mongodb');
-require('dotenv').config();
+const mongoose = require('mongoose');
+require('dotenv/config');
 
 async function InitalDBServer() {
-	const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@story-master-cluster.b6bqf.mongodb.net/admin?retryWrites=true&w=majority`;
+	const uri = `mongodb+srv://ajea:${process.env.DB_PASSWORD}@story-master-cluster.b6bqf.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
-	const client = new MongoClient(uri);
-
-	try {
-		// Connect to the MongoDB cluster
-		await client.connect();
-		console.log('Mongodb connected');
-	} catch (e) {
-		console.error(e);
-	} finally {
-		await client.close();
-	}
+	mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+	const connection = mongoose.connection;
+	connection.once('open', () => {
+		console.log('MongoDB database connection established successfully');
+	});
 }
 module.exports = InitalDBServer;

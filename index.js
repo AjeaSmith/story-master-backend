@@ -4,11 +4,17 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const InitalDBServer = require('./config/db');
 
-const auth = require('./routes/auth-route');
+const auth = require('./src/auth/AuthRouter');
+
+//Set up mongodb connection
+InitalDBServer().catch((err) => console.error(err));
 
 // middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/json' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// routes
 app.use('/auth', auth);
 
 // routes
@@ -16,6 +22,4 @@ app.get('/', (req, res) => {
 	res.send('API Working....');
 });
 
-//Set up mongodb connection
-InitalDBServer();
 app.listen(process.env.PORT, () => console.log('server started...'));

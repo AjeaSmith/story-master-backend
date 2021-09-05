@@ -1,37 +1,35 @@
-const User = require('../models/auth-model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const AuthDataAccess = require('./AuthDAL');
 
-const register = async (email, username, password) => {
+const register = async ({ email, username, password }) => {
 	try {
-		// check if user exist
-		let userExist = await User.findOne({ email: email });
-
-		if (userExist) {
-			return { message: 'User already exist' };
-		}
-		// hash password
 		let pass = await bcrypt.hash(password, 10);
 
-		const newUser = {
-			email: email,
-			username: username,
-			password: pass,
-		};
+		const { user, userExist } = await AuthDataAccess.register(
+			email,
+			username,
+			pass
+		);
 
-		await new User(newUser).save();
+		if (userExist) {
+			throw new Error('User already exist');
+		}
+
+		// save user from model -> (AuthDataAccess.js)
+		user.save();
 
 		// sign token
 		const payload = {
-			userId: newUser.id,
+			userId: user._id,
 		};
 
 		const token = jwt.sign(payload, process.env.secret, {
 			expiresIn: 10000,
 		});
-		return token;
+		return { token: token };
 	} catch (error) {
-		return error;
+		return { error: error.message };
 	}
 };
 const login = async (email, password) => {
