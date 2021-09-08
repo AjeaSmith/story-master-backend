@@ -1,21 +1,27 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const bodyParser = require('body-parser');
+const passport = require('passport');
+
 const InitalDBServer = require('./config/db');
+const user = require('./src/auth/UserRouter');
+const story = require('./src/story/StoryRouter');
 
-const auth = require('./src/auth/AuthRouter');
-
+require('dotenv').config();
+require('./config/passport')(passport);
 //Set up mongodb connection
 InitalDBServer().catch((err) => console.error(err));
 
-// middleware
+// passport
+app.use(passport.initialize());
+
 app.use(cors());
-app.use(bodyParser.json({ type: 'application/json' }));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // routes
-app.use('/auth', auth);
+app.use('/api/auth', user);
+app.use('/api/story', story);
 
 // routes
 app.get('/', (req, res) => {
