@@ -8,10 +8,18 @@ const getAllStories = async () => {
 		return { error: error.message };
 	}
 };
-const addStory = async (text, userId) => {
-	await StoryDAL.addStory(text, userId);
+const addStory = async (title, text, userId) => {
+	await StoryDAL.addStory(title, text, userId);
+};
+const deleteStory = async (storyId) => {
+	await StoryDAL.deleteStory(storyId);
+};
+const deleteUserStory = async (authorId, storyId) => {
+	await StoryDAL.deleteUserStory(authorId, storyId);
 };
 module.exports = {
 	getAllStories,
 	addStory,
+	deleteStory,
+	deleteUserStory,
 };
