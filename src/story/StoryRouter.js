@@ -20,14 +20,35 @@ router.post(
 	'/add',
 	passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
-		console.log(req.user);
 		try {
-			await StoryService.addStory(req.body.text, req.user._id);
+			await StoryService.addStory(
+				req.body.title,
+				req.body.text,
+				req.user._id
+			);
 			res.status(201).json({
 				success: true,
 				message: 'Story successfully added',
 			});
 		} catch (error) {
+			res.status(400).json({ success: false, error: error });
+		}
+	}
+);
+
+router.delete(
+	'/:storyId',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		try {
+			await StoryService.deleteStory(req.params.storyId);
+			await StoryService.deleteUserStory(req.user._id, req.params.storyId);
+			res.status(200).json({
+				success: true,
+				message: 'Story successfully deleted',
+			});
+        } catch (error) {
+            console.log(error)
 			res.status(400).json({ success: false, error: error });
 		}
 	}

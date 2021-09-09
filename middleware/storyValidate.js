@@ -1,5 +1,5 @@
 const { body, validationResult } = require('express-validator');
-const StoryService = require('../src/story/StoryService');
+
 const storyValidationRules = () => {
 	return [body('text').isEmpty().withMessage('Text is required.')];
 };
