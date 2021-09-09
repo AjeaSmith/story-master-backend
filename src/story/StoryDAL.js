@@ -23,6 +23,8 @@ const deleteUserStory = async (authorID, storyID) => {
 		{ $pull: { publishedStories: storyID } }
 	);
 };
+
+
 module.exports = {
 	getAllStories,
 	addStory,
