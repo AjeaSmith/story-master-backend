@@ -1,12 +1,13 @@
 const bcrypt = require('bcryptjs');
 const UserDataAccess = require('./UserDAL');
+const ProfileDataAccess = require('../profile/ProfileDAL');
 const { issueJWT } = require('../../utils/issueJwt');
 
 const register = async ({ email, username, password }) => {
 	try {
 		let pass = await bcrypt.hash(password, 10);
 		const { user } = await UserDataAccess.register(email, username, pass);
-
+		await ProfileDataAccess.addProfile(username, email);
 		// save user thats returned from model -> (UserDataAccess.js)
 		user.save();
 
