@@ -5,6 +5,8 @@ const userSchema = new Schema({
 	email: { type: String, required: true },
 	username: { type: String, required: true },
 	password: { type: String, required: true },
+	bio: { type: String, default: 'Something about your self :)' },
+	location: { type: String, default: 'e.g. Queens, New York' },
 	publishedStories: [
 		{
 			type: Schema.Types.ObjectId,

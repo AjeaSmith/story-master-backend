@@ -2,6 +2,7 @@ const express = require('express');
 const { validate, userValidationRules } = require('../../middleware/validate');
 const router = express.Router();
 const UserService = require('./UserService');
+const passport = require('passport');
 
 router.post('/register', userValidationRules(), validate, async (req, res) => {
 	const { token, user, expires, success, error } = await UserService.register(
@@ -30,6 +31,31 @@ router.post('/login', userValidationRules(), validate, async (req, res) => {
 		success,
 		message: 'User successfully logged in',
 	});
+});
+
+router.get('/:userId', async (req, res) => {
+	const { profile, error } = await UserService.getProfile(req.params.userId);
+	if (error) {
+		res.status(404).json({ error: error });
+	}
+	res.status(200).json({ success: true, profile });
+});
+router.post('/:userId/edit', passport.authenticate('jwt'), async (req, res) => {
+	const { updated, error } = await UserService.editProfile(
+		req.params.userId,
+		req.body
+	);
+	if (error) {
+		res.json({ error: error });
+	}
+	res.status(200).json({ success: true, profile: updated });
+});
+router.delete('/:userId', passport.authenticate('jwt'), async (req, res) => {
+	const { msg, error } = await UserService.disableAccount(req.params.userId);
+	if (error) {
+		res.json({ error: error });
+	}
+	res.status(200).json({ success: true, message: msg });
 });
 
 module.exports = router;
