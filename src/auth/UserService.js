@@ -1,13 +1,14 @@
 const bcrypt = require('bcryptjs');
 const UserDataAccess = require('./UserDAL');
-const ProfileDataAccess = require('../profile/ProfileDAL');
 const { issueJWT } = require('../../utils/issueJwt');
 
 const register = async ({ email, username, password }) => {
 	try {
 		let pass = await bcrypt.hash(password, 10);
+
 		const { user } = await UserDataAccess.register(email, username, pass);
-		await ProfileDataAccess.addProfile(username, email);
+		const { profile } = await ProfileDataAccess.addProfile(username, email);
+
 		// save user thats returned from model -> (UserDataAccess.js)
 		user.save();
 
@@ -47,9 +48,39 @@ const findByEmail = async (email) => {
 	const user = await UserDataAccess.findByEmail(email);
 	return user;
 };
-
+const getProfile = async (profileId) => {
+	try {
+		const profile = await UserDataAccess.me(profileId);
+		return {
+			profile: profile,
+		};
+	} catch (error) {
+		return { error: error.message };
+	}
+};
+const editProfile = async (profileId, body) => {
+	try {
+		const { profile } = await UserDataAccess.editProfile(profileId, body);
+		return {
+			updated: profile,
+		};
+	} catch (error) {
+		return { error: error.message };
+	}
+};
+const disableAccount = async (profileId) => {
+	try {
+		await UserDataAccess.disableAccount(profileId);
+		return { msg: 'Account deleted successfully' };
+	} catch (error) {
+		return { error: error.message };
+	}
+};
 module.exports = {
 	register,
 	login,
 	findByEmail,
+	getProfile,
+	editProfile,
+	disableAccount,
 };

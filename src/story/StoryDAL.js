@@ -6,13 +6,13 @@ const getAllStories = async () => {
 	return stories;
 };
 const addStory = async (title, text, userId) => {
-	const story = new Story({ title: title, text: text });
+	const story = new Story({ title: title, text: text, author: userId });
 	await story.save();
 
 	const user = await User.findById({ _id: userId });
 	user.publishedStories.push(story._id);
 
-	await user.save();
+	await profile.save();
 };
 const deleteStory = async (storyID) => {
 	await Story.deleteOne({ _id: storyID });
@@ -23,7 +23,6 @@ const deleteUserStory = async (authorID, storyID) => {
 		{ $pull: { publishedStories: storyID } }
 	);
 };
-
 
 module.exports = {
 	getAllStories,

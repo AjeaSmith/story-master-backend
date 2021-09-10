@@ -47,8 +47,8 @@ router.delete(
 				success: true,
 				message: 'Story successfully deleted',
 			});
-        } catch (error) {
-            console.log(error)
+		} catch (error) {
+			console.log(object);
 			res.status(400).json({ success: false, error: error });
 		}
 	}

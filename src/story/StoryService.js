@@ -8,8 +8,8 @@ const getAllStories = async () => {
 		return { error: error.message };
 	}
 };
-const addStory = async (title, text, userId) => {
-	await StoryDAL.addStory(title, text, userId);
+const addStory = async (title, text, profileId) => {
+	await StoryDAL.addStory(title, text, profileId);
 };
 const deleteStory = async (storyId) => {
 	await StoryDAL.deleteStory(storyId);
