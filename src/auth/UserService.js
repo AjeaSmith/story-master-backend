@@ -7,8 +7,6 @@ const register = async ({ email, username, password }) => {
 		let pass = await bcrypt.hash(password, 10);
 
 		const { user } = await UserDataAccess.register(email, username, pass);
-		const { profile } = await ProfileDataAccess.addProfile(username, email);
-
 		// save user thats returned from model -> (UserDataAccess.js)
 		user.save();
 
@@ -23,9 +21,9 @@ const register = async ({ email, username, password }) => {
 		return { error: error.message };
 	}
 };
-const login = async ({ username, password }) => {
+const login = async ({ email, password }) => {
 	try {
-		const user = await UserDataAccess.findByUsername(username);
+		const user = await UserDataAccess.login(email);
 		if (!user) {
 			return { success: false, error: 'Wrong credentials' };
 		}
@@ -44,10 +42,7 @@ const login = async ({ username, password }) => {
 		return { error: error.message };
 	}
 };
-const findByEmail = async (email) => {
-	const user = await UserDataAccess.findByEmail(email);
-	return user;
-};
+
 const getProfile = async (profileId) => {
 	try {
 		const profile = await UserDataAccess.me(profileId);
@@ -79,7 +74,6 @@ const disableAccount = async (profileId) => {
 module.exports = {
 	register,
 	login,
-	findByEmail,
 	getProfile,
 	editProfile,
 	disableAccount,

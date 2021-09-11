@@ -1,26 +1,38 @@
 const express = require('express');
-const { validate, userValidationRules } = require('../../middleware/validate');
+const {
+	validate,
+	registerValidationRules,
+	loginValidationRules,
+} = require('../../middleware/validations');
 const router = express.Router();
 const UserService = require('./UserService');
 const passport = require('passport');
 
-router.post('/register', userValidationRules(), validate, async (req, res) => {
-	const { token, user, expires, success, error } = await UserService.register(
-		req.body
-	);
-	if (error) {
-		res.status(409).json({ error: error });
+router.post(
+	'/register',
+	registerValidationRules(),
+	validate,
+	async (req, res) => {
+		const {
+			token,
+			user,
+			expires,
+			success,
+			error,
+		} = await UserService.register(req.body);
+		if (error) {
+			res.status(409).json({ error: error });
+		}
+		res.status(201).json({
+			token,
+			user,
+			expires,
+			success,
+			message: 'User successfully registered',
+		});
 	}
-	res.status(201).json({
-		token,
-		user,
-		expires,
-		success,
-		message: 'User successfully registered',
-	});
-});
-
-router.post('/login', userValidationRules(), validate, async (req, res) => {
+);
+router.post('/login', loginValidationRules(), validate, async (req, res) => {
 	const { token, expires, success, error } = await UserService.login(req.body);
 	if (error) {
 		res.status(409).json({ error: error });
