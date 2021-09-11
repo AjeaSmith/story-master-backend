@@ -48,7 +48,7 @@ router.post('/login', loginValidationRules(), validate, async (req, res) => {
 router.get('/:userId', async (req, res) => {
 	const { profile, error } = await UserService.getProfile(req.params.userId);
 	if (error) {
-		res.status(404).json({ error: error });
+		res.status(404).json({ success: false, error });
 	}
 	res.status(200).json({ success: true, profile });
 });

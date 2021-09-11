@@ -43,7 +43,6 @@ router.delete(
 				message: 'Story successfully deleted',
 			});
 		} catch (error) {
-			console.log(object);
 			res.status(400).json({ success: false, error: error });
 		}
 	}
