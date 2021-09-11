@@ -9,7 +9,7 @@ router.post(
 	passport.authenticate('jwt'),
 	validate,
 	async (req, res) => {
-		const { error, msg } = await CommentService.postComment(
+		const { error } = await CommentService.postComment(
 			req.body.message,
 			req.user._id,
 			req.params.storyId
@@ -17,13 +17,18 @@ router.post(
 		if (error) {
 			res.status(500).json({ error: 'unable to post comment' });
 		}
-		res.status(201).json({ message: msg });
+		res.status(201).json({ msg: 'Comment successfully posted' });
 	}
 );
-router.delete(
-	'/:commentId',
-	passport.authenticate('jwt'),
-	async (req, res) => {}
-);
+router.delete('/:storyId', passport.authenticate('jwt'), async (req, res) => {
+	const { error } = await CommentService.deleteComment(
+		req.body.commentId,
+		req.params.storyId
+	);
+	if (error) {
+		res.status(500).json({ error: 'unable to delete comment' });
+	}
+	res.status(200).json({ msg: 'Comment successfully deleted' });
+});
 
 module.exports = router;
