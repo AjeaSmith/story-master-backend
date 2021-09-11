@@ -1,14 +1,20 @@
 const express = require('express');
 const { validate } = require('../../middleware/validations');
 const router = express.Router();
-const UserService = require('./UserService');
+const CommentService = require('./CommentService');
 const passport = require('passport');
 
 router.post('/:storyId/comment/add', validate, async (req, res) => {
-
+	const { error, msg } = await CommentService.postComment(
+		req.body.message,
+		req.user._id,
+		req.params.storyId
+	);
+	if (error) {
+		res.status(500).json({ error: 'unable to post comment' });
+	}
+	res.status(201).json({ message: msg });
 });
-router.delete('/:commentId', async (req, res) => {
-
-})
+router.delete('/:commentId', async (req, res) => {});
 
 module.exports = router;
