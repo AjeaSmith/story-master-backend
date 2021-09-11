@@ -1,10 +1,10 @@
 {
 	"name": "story-master-backend",
 	"version": "1.0.0",
-	"description": "",
+	"description": "API backend for the Story Master app",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon --exec babel-node index.js",
+		"start": "index.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
