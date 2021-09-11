@@ -6,6 +6,7 @@ const passport = require('passport');
 const InitalDBServer = require('./config/db');
 const user = require('./src/auth/UserRouter');
 const story = require('./src/story/StoryRouter');
+const comment = require('./src/comment/CommentRouter');
 
 require('dotenv').config();
 require('./config/passport')(passport);
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 app.use('/api/user', user);
 app.use('/api/story', story);
+app.use('/api/comment', comment);
 
 // routes
 app.get('/', (req, res) => {
