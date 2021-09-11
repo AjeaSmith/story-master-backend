@@ -17,8 +17,10 @@ const findByUsername = async (username) => {
 	return userName;
 };
 const me = async (profileId) => {
-	const profile = await Profile.findById({ _id: profileId });
-	return profile;
+	const user = await User.findById({ _id: profileId }).populate({
+		path: 'publishedStories',
+	});
+	return user;
 };
 const editProfile = async (profileId, body) => {
 	const updatedProfile = Profile.findByIdAndUpdate(profileId, body);

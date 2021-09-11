@@ -7,8 +7,6 @@ const register = async ({ email, username, password }) => {
 		let pass = await bcrypt.hash(password, 10);
 
 		const { user } = await UserDataAccess.register(email, username, pass);
-		const { profile } = await ProfileDataAccess.addProfile(username, email);
-
 		// save user thats returned from model -> (UserDataAccess.js)
 		user.save();
 

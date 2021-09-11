@@ -12,7 +12,7 @@ const addStory = async (title, text, userId) => {
 	const user = await User.findById({ _id: userId });
 	user.publishedStories.push(story._id);
 
-	await profile.save();
+	await user.save();
 };
 const deleteStory = async (storyID) => {
 	await Story.deleteOne({ _id: storyID });

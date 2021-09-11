@@ -19,7 +19,6 @@ router.post('/register', userValidationRules(), validate, async (req, res) => {
 		message: 'User successfully registered',
 	});
 });
-
 router.post('/login', userValidationRules(), validate, async (req, res) => {
 	const { token, expires, success, error } = await UserService.login(req.body);
 	if (error) {
