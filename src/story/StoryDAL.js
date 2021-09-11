@@ -4,7 +4,10 @@ const User = require('../auth/User');
 const getAllStories = async () => {
 	const stories = await Story.find({})
 		.populate('author', '_id username')
-		.populate('comments');
+		.populate({
+			path: 'comments',
+			populate: { path: 'author', select: 'username' },
+		});
 	return stories;
 };
 const addStory = async (title, text, userId) => {

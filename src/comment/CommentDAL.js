@@ -13,15 +13,18 @@ const postComment = async (message, authorId, storyId) => {
 
 	await story.save();
 };
-const deleteComment = async (commentId, storyId) => {
+const deleteComment = async (commentId) => {
 	await Comment.deleteOne({ _id: commentId });
+};
+const deleteStoryComment = async (commentId, storyId) => {
 	await Story.findById({ _id: storyId }).updateOne(
 		{},
-		{ $pull: { comments: storyId } }
+		{ $pull: { comments: commentId } }
 	);
 };
 
 module.exports = {
 	postComment,
 	deleteComment,
+	deleteStoryComment,
 };

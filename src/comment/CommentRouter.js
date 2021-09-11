@@ -5,30 +5,36 @@ const CommentService = require('./CommentService');
 const passport = require('passport');
 
 router.post(
-	'/:storyId/comment/add',
-	passport.authenticate('jwt'),
-	validate,
+	'/:storyId/add',
+	passport.authenticate('jwt', { session: false }),
 	async (req, res) => {
-		const { error } = await CommentService.postComment(
-			req.body.message,
-			req.user._id,
-			req.params.storyId
-		);
-		if (error) {
-			res.status(500).json({ error: 'unable to post comment' });
+		try {
+			await CommentService.postComment(
+				req.body.message,
+				req.user._id,
+				req.params.storyId
+			);
+			res.status(201).json({ msg: 'Comment successfully posted' });
+		} catch (error) {
+			res.status(500).json({ error: error });
 		}
-		res.status(201).json({ msg: 'Comment successfully posted' });
 	}
 );
-router.delete('/:storyId', passport.authenticate('jwt'), async (req, res) => {
-	const { error } = await CommentService.deleteComment(
-		req.body.commentId,
-		req.params.storyId
-	);
-	if (error) {
-		res.status(500).json({ error: 'unable to delete comment' });
+router.delete(
+	'/:storyId',
+	passport.authenticate('jwt', { session: false }),
+	async (req, res) => {
+		try {
+			await CommentService.deleteComment(req.body.commentId);
+			await CommentService.deleteStoryComment(
+				req.params.storyId.anchor,
+				req.body.commentId
+			);
+			res.status(200).json({ msg: 'Comment successfully deleted' });
+		} catch (error) {
+			res.status(500).json({ error });
+		}
 	}
-	res.status(200).json({ msg: 'Comment successfully deleted' });
-});
+);
 
 module.exports = router;

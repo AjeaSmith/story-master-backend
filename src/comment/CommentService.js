@@ -1,22 +1,16 @@
 const CommentDataAccess = require('./CommentDAL');
 
 const postComment = async (message, authorId, storyId) => {
-	try {
-		await CommentDataAccess.postComment(message, authorId, storyId);
-	} catch (error) {
-		return { error: error };
-	}
+	await CommentDataAccess.postComment(message, authorId, storyId);
 };
-const deleteComment = async (commentId, storyId) => {
-	try {
-		await CommentDataAccess.deleteComment(commentId, storyId);
-		return;
-	} catch (error) {
-		return { error: error };
-	}
+const deleteComment = async (commentId) => {
+	await CommentDataAccess.deleteComment(commentId);
+};
+const deleteStoryComment = async (storyId, commentId) => {
+	await CommentDataAccess.deleteStoryComment(storyId, commentId);
 };
 module.exports = {
 	postComment,
 	deleteComment,
+	deleteStoryComment,
 };
-ß;
