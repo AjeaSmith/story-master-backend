@@ -1,9 +1,4 @@
 const express = require('express');
-const {
-	validate,
-	storyValidationRules,
-} = require('../../middleware/storyValidate');
-
 const router = express.Router();
 const StoryService = require('./StoryService');
 const passport = require('passport');
