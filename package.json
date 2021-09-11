@@ -4,9 +4,10 @@
 	"description": "API backend for the Story Master app",
 	"main": "index.js",
 	"scripts": {
-		"start": "index.js",
+		 "start": "node index.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
+	"heroku-run-build-script": true,
 	"keywords": [],
 	"author": "Ajea smith",
 	"license": "MIT",
