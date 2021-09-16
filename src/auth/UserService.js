@@ -12,7 +12,6 @@ const register = async ({ email, username, password }) => {
 
 		const jwt = issueJWT(user);
 		return {
-			user: user,
 			token: jwt.token,
 			expires: jwt.expires,
 			success: true,

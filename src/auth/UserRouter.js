@@ -25,7 +25,6 @@ router.post(
 		}
 		res.status(201).json({
 			token,
-			user,
 			expires,
 			success,
 			message: 'User successfully registered',
