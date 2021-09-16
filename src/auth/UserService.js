@@ -9,7 +9,7 @@ const register = async ({ email, username, password }) => {
 		const userExists = await UserDataAccess.findByEmail(email);
 		// check if user exist already
 		if (userExists) {
-			return { error: 'User already exists' };
+			return { error: 'User already exists', success: false };
 		}
 		const { user } = await UserDataAccess.register(email, username, pass);
 		// save user thats returned from model -> (UserDataAccess.js)

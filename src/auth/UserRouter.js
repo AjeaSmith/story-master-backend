@@ -16,9 +16,9 @@ router.post(
 		const { token, expires, success, error } = await UserService.register(
 			req.body
 		);
-		
+
 		if (error) {
-			res.status(409).json({ error: error });
+			res.status(400).json({ error, success });
 		}
 		res.status(201).json({
 			token,
@@ -30,7 +30,7 @@ router.post(
 router.post('/login', loginValidationRules(), validate, async (req, res) => {
 	const { token, expires, success, error } = await UserService.login(req.body);
 	if (error) {
-		res.status(409).json({ error: error });
+		res.status(400).json({ error, success });
 	}
 	res.status(200).json({
 		token,
