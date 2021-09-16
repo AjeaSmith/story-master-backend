@@ -13,13 +13,9 @@ router.post(
 	registerValidationRules(),
 	validate,
 	async (req, res) => {
-		const {
-			token,
-			user,
-			expires,
-			success,
-			error,
-		} = await UserService.register(req.body);
+		const { token, expires, success, error } = await UserService.register(
+			req.body
+		);
 		if (error) {
 			res.status(409).json({ error: error });
 		}
@@ -27,7 +23,6 @@ router.post(
 			token,
 			expires,
 			success,
-			message: 'User successfully registered',
 		});
 	}
 );
