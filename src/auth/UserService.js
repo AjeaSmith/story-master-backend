@@ -17,7 +17,7 @@ const register = async ({ email, username, password }) => {
 
 		// const jwt = issueJWT(user);
 	} catch (error) {
-		return { error: error };
+		return error;
 	}
 };
 const login = async ({ email, password }) => {

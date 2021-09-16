@@ -19,7 +19,7 @@ router.post(
 				message: 'User successfully registered',
 			});
 		} catch (error) {
-			res.status(400).json({ error });
+			res.status(400).json({ msg: error });
 		}
 	}
 );
