@@ -16,6 +16,7 @@ router.post(
 		const { token, expires, success, error } = await UserService.register(
 			req.body
 		);
+		
 		if (error) {
 			res.status(409).json({ error: error });
 		}
