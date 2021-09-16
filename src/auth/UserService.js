@@ -6,12 +6,12 @@ const register = async ({ email, username, password }) => {
 	try {
 		let pass = await bcrypt.hash(password, 10);
 
-		const { user } = await UserDataAccess.register(email, username, pass);
-		const userExists = await UserDataAccess.findByEmail(user);
+		const userExists = await UserDataAccess.findByEmail(email);
 		// check if user exist already
 		if (userExists) {
 			return { error: 'User already exists' };
 		}
+		const { user } = await UserDataAccess.register(email, username, pass);
 		// save user thats returned from model -> (UserDataAccess.js)
 		user.save();
 
