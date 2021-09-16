@@ -25,15 +25,15 @@ const editProfile = async (profileId, body) => {
 const disableAccount = async (profileId) => {
 	await User.findByIdAndDelete(profileId);
 };
-const findByEmail = (email) => {
+const findByEmail = async (email) => {
 	const user = await User.findOne({ email });
-	return user
-}
+	return user;
+};
 module.exports = {
 	login,
 	register,
 	me,
 	editProfile,
 	disableAccount,
-	findByEmail
+	findByEmail,
 };
