@@ -9,20 +9,15 @@ const register = async ({ email, username, password }) => {
 		const userExists = await UserDataAccess.findByEmail(email);
 		// check if user exist already
 		if (userExists) {
-			return { error: 'User already exists', success: false };
+			throw new Error('User already exists');
 		}
 		const { user } = await UserDataAccess.register(email, username, pass);
 		// save user thats returned from model -> (UserDataAccess.js)
 		user.save();
 
-		const jwt = issueJWT(user);
-		return {
-			token: jwt.token,
-			expires: jwt.expires,
-			success: true,
-		};
+		// const jwt = issueJWT(user);
 	} catch (error) {
-		return { error: error.message };
+		return { error: error };
 	}
 };
 const login = async ({ email, password }) => {

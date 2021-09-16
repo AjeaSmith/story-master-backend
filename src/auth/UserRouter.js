@@ -13,18 +13,14 @@ router.post(
 	registerValidationRules(),
 	validate,
 	async (req, res) => {
-		const { token, expires, success, error } = await UserService.register(
-			req.body
-		);
-
-		if (error) {
-			res.status(400).json({ error, success });
+		try {
+			await UserService.register(req.body);
+			res.status(201).json({
+				message: 'User successfully registered',
+			});
+		} catch (error) {
+			res.status(400).json({ error });
 		}
-		res.status(201).json({
-			token,
-			expires,
-			success,
-		});
 	}
 );
 router.post('/login', loginValidationRules(), validate, async (req, res) => {
