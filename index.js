@@ -19,7 +19,9 @@ app.use(passport.initialize());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+// app.use((err, req, res, next) => {
+// 	return res.status(err.status).json({ message: err.message });
+// });
 // routes
 app.use('/api/user', user);
 app.use('/api/story', story);
@@ -30,4 +32,4 @@ app.get('/', (req, res) => {
 	res.send('API Working....');
 });
 
-app.listen(process.env.PORT, () => console.log('server started...'));
+app.listen(8080, () => console.log('server started...'));

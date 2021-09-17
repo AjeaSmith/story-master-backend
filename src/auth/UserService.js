@@ -1,24 +1,20 @@
 const bcrypt = require('bcryptjs');
 const UserDataAccess = require('./UserDAL');
 const { issueJWT } = require('../../utils/issueJwt');
+const { UserFoundException } = require('../errorHandlers/userFound');
 
 const register = async ({ email, username, password }) => {
-	try {
-		let pass = await bcrypt.hash(password, 10);
+	let pass = await bcrypt.hash(password, 10);
 
-		const userExists = await UserDataAccess.findByEmail(email);
-		// check if user exist already
-		if (userExists) {
-			throw new Error('User already exists');
-		}
-		const { user } = await UserDataAccess.register(email, username, pass);
-		// save user thats returned from model -> (UserDataAccess.js)
-		user.save();
-
-		// const jwt = issueJWT(user);
-	} catch (error) {
-		return error;
+	const userExists = await UserDataAccess.findByEmail(email);
+	// check if user exist already
+	if (userExists) {
+		throw new UserFoundException();
 	}
+	const { user } = await UserDataAccess.register(email, username, pass);
+	// save user thats returned from model -> (UserDataAccess.js)
+	user.save();
+	// const jwt = issueJWT(user);
 };
 const login = async ({ email, password }) => {
 	try {

@@ -15,11 +15,9 @@ router.post(
 	async (req, res) => {
 		try {
 			await UserService.register(req.body);
-			res.status(201).json({
-				message: 'User successfully registered',
-			});
+			res.status(201).json({ msg: 'User successfully registered' });
 		} catch (error) {
-			res.status(400).json({ msg: error });
+			return res.status(error.status).send({ error: error.message });
 		}
 	}
 );
