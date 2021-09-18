@@ -25,6 +25,7 @@ router.post('/login', loginValidationRules(), validate, async (req, res) => {
 	try {
 		const { token, expires } = await UserService.login(req.body);
 		res.cookie('access_token', token, {
+			maxAge: expires,
 			httpOnly: true,
 			secure: process.env.NODE_ENV === 'production',
 		})
