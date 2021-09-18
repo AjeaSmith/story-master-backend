@@ -37,6 +37,7 @@ const login = async ({ email, password }) => {
 
 const getProfile = async (profileId) => {
 	const profile = await UserDataAccess.me(profileId);
+	console.log(profile);
 	if (!profile) {
 		throw new ProfileNotFoundException();
 	}
