@@ -53,13 +53,11 @@ const editProfile = async (profileId, data) => {
 	};
 };
 const disableAccount = async (profileId) => {
-	await UserDataAccess.disableAccount(profileId)
-		.then(() => {
-			return { message: 'Account deleted successfully' };
-		})
-		.catch((err) => {
-			throw new AccountRemoveException();
-		});
+	const account = await UserDataAccess.disableAccount(profileId);
+	if (!account) {
+		throw new AccountNotFoundException();
+	}
+	return { message: 'Account successfully disabled' };
 };
 module.exports = {
 	register,

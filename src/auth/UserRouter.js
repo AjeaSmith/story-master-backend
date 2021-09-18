@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const {
 	validate,
 	registerValidationRules,
@@ -57,10 +56,10 @@ router.put('/:id/edit', authorization, async (req, res) => {
 });
 router.delete('/:id', authorization, async (req, res) => {
 	try {
-		await UserService.disableAccount(req.params.userId);
-		res.status(200).json({ success: true, message: msg });
+		const { message } = await UserService.disableAccount(req.params.id);
+		res.status(200).json({ message });
 	} catch (error) {
-		console.log('error from delete account', error);
+		return res.status(error.status).send({ error: error.message });
 	}
 });
 

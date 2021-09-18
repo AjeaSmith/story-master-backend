@@ -26,7 +26,8 @@ const editProfile = async (profileId, data) => {
 	return updatedProfile;
 };
 const disableAccount = async (profileId) => {
-	await User.findByIdAndDelete(profileId);
+	const account = await User.findByIdAndDelete(profileId);
+	return account;
 };
 const findByEmail = async (email) => {
 	const user = await User.findOne({ email });
