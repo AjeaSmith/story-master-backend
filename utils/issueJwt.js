@@ -3,7 +3,7 @@ require('dotenv/config');
 const issueJWT = (user) => {
 	const _id = user._id;
 
-	const expiresIn = '14d';
+	const expiresIn = '14 days';
 
 	const payload = {
 		sub: _id,

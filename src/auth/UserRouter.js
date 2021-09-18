@@ -6,8 +6,8 @@ const {
 } = require('../../middleware/validations');
 const router = express.Router();
 const UserService = require('./UserService');
-const passport = require('passport');
-
+// const passport = require('passport');
+const { authorization } = require('../../middleware/authorize');
 router.post(
 	'/register',
 	registerValidationRules(),
@@ -36,29 +36,32 @@ router.post('/login', loginValidationRules(), validate, async (req, res) => {
 	}
 });
 
-router.get('/:userId', async (req, res) => {
-	const { profile, error } = await UserService.getProfile(req.params.userId);
-	if (error) {
-		res.status(404).json({ success: false, error });
+router.get('/:id', async (req, res) => {
+	try {
+		const { profile } = await UserService.getProfile(req.params.id);
+		res.status(200).json(profile);
+	} catch (error) {
+		return res.status(error.status).send({ error: error.message });
 	}
-	res.status(200).json({ success: true, profile });
 });
-router.post('/:userId/edit', passport.authenticate('jwt'), async (req, res) => {
-	const { updated, error } = await UserService.editProfile(
-		req.params.userId,
-		req.body
-	);
-	if (error) {
-		res.json({ error: error });
+router.post('/:id/edit', authorization, async (req, res) => {
+	try {
+		const { updated } = await UserService.editProfile(
+			req.params.id,
+			req.body
+		);
+		res.status(200).json({ profile: updated });
+	} catch (error) {
+		return res.status(error.status).send({ error: error.message });
 	}
-	res.status(200).json({ success: true, profile: updated });
 });
-router.delete('/:userId', passport.authenticate('jwt'), async (req, res) => {
-	const { msg, error } = await UserService.disableAccount(req.params.userId);
-	if (error) {
-		res.json({ error: error });
+router.delete('/:id', authorization, async (req, res) => {
+	try {
+		await UserService.disableAccount(req.params.userId);
+		res.status(200).json({ success: true, message: msg });
+	} catch (error) {
+
 	}
-	res.status(200).json({ success: true, message: msg });
 });
 
 module.exports = router;
