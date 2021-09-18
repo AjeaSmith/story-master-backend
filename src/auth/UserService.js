@@ -1,7 +1,10 @@
 const bcrypt = require('bcryptjs');
 const UserDataAccess = require('./UserDAL');
 const { issueJWT } = require('../../utils/issueJwt');
-const { UserFoundException } = require('../errorHandlers/userFound');
+const {
+	UserFoundException,
+	UserNotFoundException,
+} = require('../errorHandlers/userFound');
 
 const register = async ({ email, username, password }) => {
 	let pass = await bcrypt.hash(password, 10);
@@ -17,25 +20,16 @@ const register = async ({ email, username, password }) => {
 	// const jwt = issueJWT(user);
 };
 const login = async ({ email, password }) => {
-	try {
-		const user = await UserDataAccess.login(email);
-		if (!user) {
-			return { success: false, error: 'Wrong credentials' };
-		}
-		const isValid = await bcrypt.compare(password, user.password);
-		if (isValid) {
-			const tokenObj = issueJWT(user);
-			return {
-				success: true,
-				token: tokenObj.token,
-				expires: tokenObj.expires,
-			};
-		} else {
-			return { success: false, error: 'Wrong credentials' };
-		}
-	} catch (error) {
-		return { error: error.message };
+	const user = await UserDataAccess.login(email);
+	if (!user) {
+		throw new UserNotFoundException();
 	}
+	const isValid = await bcrypt.compare(password, user.password);
+	if (!isValid) {
+		throw new UserNotFoundException();
+	}
+	const { token, expires } = issueJWT(user);
+	return { token, expires };
 };
 
 const getProfile = async (profileId) => {

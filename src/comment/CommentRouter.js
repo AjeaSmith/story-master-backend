@@ -27,7 +27,7 @@ router.delete(
 		try {
 			await CommentService.deleteComment(req.body.commentId);
 			await CommentService.deleteStoryComment(
-				req.params.storyId.anchor,
+				req.params.storyId,
 				req.body.commentId
 			);
 			res.status(200).json({ msg: 'Comment successfully deleted' });

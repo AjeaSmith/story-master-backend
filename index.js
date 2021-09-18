@@ -7,6 +7,7 @@ const InitalDBServer = require('./config/db');
 const user = require('./src/auth/UserRouter');
 const story = require('./src/story/StoryRouter');
 const comment = require('./src/comment/CommentRouter');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 require('./config/passport')(passport);
@@ -19,6 +20,7 @@ app.use(passport.initialize());
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // routes
 app.use('/api/user', user);

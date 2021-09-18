@@ -22,16 +22,18 @@ router.post(
 	}
 );
 router.post('/login', loginValidationRules(), validate, async (req, res) => {
-	const { token, expires, success, error } = await UserService.login(req.body);
-	if (error) {
-		res.status(400).json({ error, success });
+	try {
+		const { token, expires } = await UserService.login(req.body);
+		res.cookie('access_token', token, {
+			maxAge: expires,
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+		})
+			.status(200)
+			.json({ msg: 'Logged in successfully' });
+	} catch (error) {
+		return res.status(error.status).send({ error: error.message });
 	}
-	res.status(200).json({
-		token,
-		expires,
-		success,
-		message: 'User successfully logged in',
-	});
 });
 
 router.get('/:userId', async (req, res) => {
