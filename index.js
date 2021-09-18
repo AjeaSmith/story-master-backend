@@ -32,4 +32,4 @@ app.get('/', (req, res) => {
 	res.send('API Working....');
 });
 
-app.listen(process.env.PORT, () => console.log('server started...'));
+app.listen(8080, () => console.log('server started...'));

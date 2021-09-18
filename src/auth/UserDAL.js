@@ -18,9 +18,12 @@ const me = async (profileId) => {
 	});
 	return user;
 };
-const editProfile = async (profileId, body) => {
-	const updatedProfile = Profile.findByIdAndUpdate(profileId, body);
-	return { profile: updatedProfile };
+const editProfile = async (profileId, data) => {
+	const updatedProfile = await User.findByIdAndUpdate(
+		{ _id: profileId },
+		data
+	);
+	return updatedProfile;
 };
 const disableAccount = async (profileId) => {
 	await User.findByIdAndDelete(profileId);

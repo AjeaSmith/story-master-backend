@@ -43,13 +43,13 @@ const getProfile = async (profileId) => {
 	}
 	return { profile: profile };
 };
-const editProfile = async (profileId, body) => {
-	const { profile } = await UserDataAccess.editProfile(profileId, body);
-	if (!profile) {
+const editProfile = async (profileId, data) => {
+	const updatedProfile = await UserDataAccess.editProfile(profileId, data);
+	if (!updatedProfile) {
 		throw new ProfileUpdateException();
 	}
 	return {
-		updated: profile,
+		updated: updatedProfile,
 	};
 };
 const disableAccount = async (profileId) => {

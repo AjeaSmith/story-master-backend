@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const {
 	validate,
 	registerValidationRules,
@@ -6,7 +7,6 @@ const {
 } = require('../../middleware/validations');
 const router = express.Router();
 const UserService = require('./UserService');
-// const passport = require('passport');
 const { authorization } = require('../../middleware/authorize');
 router.post(
 	'/register',
@@ -35,7 +35,6 @@ router.post('/login', loginValidationRules(), validate, async (req, res) => {
 		return res.status(error.status).send({ error: error.message });
 	}
 });
-
 router.get('/:id', async (req, res) => {
 	try {
 		const { profile } = await UserService.getProfile(req.params.id);
@@ -44,8 +43,9 @@ router.get('/:id', async (req, res) => {
 		return res.status(error.status).send({ error: error.message });
 	}
 });
-router.post('/:id/edit', authorization, async (req, res) => {
+router.put('/:id/edit', authorization, async (req, res) => {
 	try {
+		console.log(req.body);
 		const { updated } = await UserService.editProfile(
 			req.params.id,
 			req.body
@@ -60,7 +60,7 @@ router.delete('/:id', authorization, async (req, res) => {
 		await UserService.disableAccount(req.params.userId);
 		res.status(200).json({ success: true, message: msg });
 	} catch (error) {
-
+		console.log('error from delete account', error);
 	}
 });
 
