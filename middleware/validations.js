@@ -22,7 +22,13 @@ const registerValidationRules = () => {
 			.withMessage('Password must be at least 6 characters long'),
 	];
 };
+const addStoryRules = () => {
+	return [
+		body('title').isEmpty().withMessage('Title field is required'),
 
+		body('text').isEmpty().withMessage('Story field is required'),
+	];
+};
 const validate = (req, res, next) => {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
@@ -35,4 +41,5 @@ module.exports = {
 	validate,
 	loginValidationRules,
 	registerValidationRules,
+	addStoryRules,
 };

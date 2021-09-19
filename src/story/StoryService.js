@@ -1,12 +1,14 @@
 const StoryDAL = require('./StoryDAL');
-
+const {
+	StoriesNotFoundException,
+	PostStoryException,
+} = require('../errorHandlers/storyExceptions');
 const getAllStories = async () => {
-	try {
-		const stories = await StoryDAL.getAllStories();
-		return { data: stories };
-	} catch (error) {
-		return { error: error.message };
+	const stories = await StoryDAL.getAllStories();
+	if (!stories.length) {
+		throw new StoriesNotFoundException();
 	}
+	return { data: stories };
 };
 const addStory = async (title, text, profileId) => {
 	await StoryDAL.addStory(title, text, profileId);
