@@ -52,9 +52,10 @@ const editProfile = async (profileId, data) => {
 		updated: updatedProfile,
 	};
 };
-const disableAccount = async (profileId) => {
-	const account = await UserDataAccess.disableAccount(profileId);
-	if (!account) {
+const disableAccount = async (userId) => {
+	const user = await UserDataAccess.disableAccount(userId);
+	const story = await UserDataAccess.deleteAssociatedStories(userId);
+	if (!user || story) {
 		throw new AccountNotFoundException();
 	}
 	return { message: 'Account successfully disabled' };

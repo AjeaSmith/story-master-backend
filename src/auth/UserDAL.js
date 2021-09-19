@@ -1,5 +1,5 @@
 const User = require('./User');
-
+const Story = require('../story/Story');
 const register = async (email, username, password) => {
 	const newUser = new User({
 		email: email,
@@ -12,22 +12,23 @@ const login = async (email) => {
 	let userName = await User.findOne({ email: email });
 	return userName;
 };
-const me = async (profileId) => {
-	const user = await User.findById({ _id: profileId }).populate({
+const me = async (userId) => {
+	const user = await User.findById({ _id: userId }).populate({
 		path: 'publishedStories',
 	});
 	return user;
 };
-const editProfile = async (profileId, data) => {
-	const updatedProfile = await User.findByIdAndUpdate(
-		{ _id: profileId },
-		data
-	);
+const editProfile = async (userId, data) => {
+	const updatedProfile = await User.findByIdAndUpdate({ _id: userId }, data);
 	return updatedProfile;
 };
-const disableAccount = async (profileId) => {
-	const account = await User.findByIdAndDelete(profileId);
+const disableAccount = async (userId) => {
+	const account = await User.findByIdAndDelete(userId);
 	return account;
+};
+const deleteAssociatedStories = async (userId) => {
+	const stories = await Story.findOneAndDelete({ author: userId });
+	return stories;
 };
 const findByEmail = async (email) => {
 	const user = await User.findOne({ email });
@@ -39,5 +40,6 @@ module.exports = {
 	me,
 	editProfile,
 	disableAccount,
+	deleteAssociatedStories,
 	findByEmail,
 };

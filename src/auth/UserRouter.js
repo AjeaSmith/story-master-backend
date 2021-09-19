@@ -54,9 +54,9 @@ router.put('/:id/edit', authorization, async (req, res) => {
 		return res.status(error.status).send({ error: error.message });
 	}
 });
-router.delete('/:id', authorization, async (req, res) => {
+router.delete('/', authorization, async (req, res) => {
 	try {
-		const { message } = await UserService.disableAccount(req.params.id);
+		const { message } = await UserService.disableAccount(req.userId);
 		res.status(200).json({ message });
 	} catch (error) {
 		return res.status(error.status).send({ error: error.message });

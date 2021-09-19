@@ -26,16 +26,24 @@ router.post('/add', authorization, addStoryRules(), async (req, res) => {
 		});
 });
 
-router.delete('/:storyId', async (req, res) => {
-	try {
-		await StoryService.deleteStory(req.params.storyId);
-		await StoryService.deleteUserStory(req.user._id, req.params.storyId);
-		res.status(200).json({
-			success: true,
-			message: 'Story successfully deleted',
+router.delete('/:storyId', authorization, async (req, res) => {
+	await StoryService.deleteStory(req.params.storyId)
+		.then(() => {
+			res.status(200).json({
+				message: 'Story successfully deleted',
+			});
+		})
+		.catch((err) => {
+			res.status(400).json({ error: err });
 		});
-	} catch (error) {
-		res.status(400).json({ success: false, error: error });
-	}
+	await StoryService.deleteUserStory(req.userId, req.params.storyId)
+		.then(() => {
+			res.status(200).json({
+				message: 'Story successfully deleted',
+			});
+		})
+		.catch((err) => {
+			res.status(400).json({ error: err });
+		});
 });
 module.exports = router;
