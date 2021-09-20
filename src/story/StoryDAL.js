@@ -10,6 +10,7 @@ const getAllStories = async () => {
 		});
 	return stories;
 };
+
 const addStory = async (title, text, userId) => {
 	const story = new Story({ title: title, text: text, author: userId });
 	await story.save();
@@ -19,9 +20,11 @@ const addStory = async (title, text, userId) => {
 
 	await user.save();
 };
+
 const deleteStory = async (storyID) => {
 	await Story.deleteOne({ _id: storyID });
 };
+
 const deleteUserStory = async (authorID, storyID) => {
 	await User.findById({ _id: authorID }).updateOne(
 		{},

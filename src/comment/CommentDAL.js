@@ -10,9 +10,9 @@ const postComment = async (message, authorId, storyId) => {
 
 	const story = await Story.findById({ _id: storyId });
 	story.comments.push(newComment._id);
-
 	await story.save();
 };
+
 const deleteComment = async (commentId) => {
 	await Comment.deleteOne({ _id: commentId });
 };

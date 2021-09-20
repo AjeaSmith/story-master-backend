@@ -7,7 +7,7 @@ const deleteComment = async (commentId) => {
 	await CommentDataAccess.deleteComment(commentId);
 };
 const deleteStoryComment = async (storyId, commentId) => {
-	await CommentDataAccess.deleteStoryComment(storyId, commentId);
+	await CommentDataAccess.deleteStoryComment(commentId, storyId);
 };
 module.exports = {
 	postComment,
