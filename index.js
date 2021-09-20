@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const passport = require('passport');
 
 const InitalDBServer = require('./config/db');
 const user = require('./src/auth/UserRouter');
@@ -10,12 +9,11 @@ const comment = require('./src/comment/CommentRouter');
 const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
-require('./config/passport')(passport);
+
 //Set up mongodb connection
 InitalDBServer().catch((err) => console.error(err));
 
 // passport
-app.use(passport.initialize());
 
 app.use(cors());
 app.use(express.json());

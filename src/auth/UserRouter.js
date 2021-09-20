@@ -26,7 +26,7 @@ router.post('/login', loginValidationRules(), validate, async (req, res) => {
 		res.cookie('access_token', token, {
 			expires: expires,
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production',
+			secure: true,
 		})
 			.status(200)
 			.json({ msg: 'Logged in successfully' });
