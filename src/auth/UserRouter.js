@@ -7,6 +7,7 @@ const {
 const router = express.Router();
 const UserService = require('./UserService');
 const { authorization } = require('../../middleware/authorize');
+
 router.post(
 	'/register',
 	registerValidationRules(),
@@ -25,8 +26,8 @@ router.post('/login', loginValidationRules(), validate, async (req, res) => {
 		const { token, expires } = await UserService.login(req.body);
 		res.cookie('access_token', token, {
 			expires: expires,
-			httpOnly: true,
-			secure: true,
+			httpOnly: false,
+			secure: false,
 		})
 			.status(200)
 			.json({ msg: 'Logged in successfully' });
@@ -34,7 +35,17 @@ router.post('/login', loginValidationRules(), validate, async (req, res) => {
 		return res.status(error.status).send({ error: error.message });
 	}
 });
-router.get('/:id', async (req, res) => {
+router.get('/logout', (req, res) => {
+	const options = {
+		expires: new Date(Date.now() + 10000),
+		secure: false,
+		httpOnly: false,
+	};
+	res.cookie('access_token', 'expired_token', options);
+	return res.status(200).send({ message: 'logged out successfully' });
+});
+
+router.get('/:id', authorization, async (req, res) => {
 	try {
 		const { profile } = await UserService.getProfile(req.params.id);
 		res.status(200).json(profile);
@@ -42,9 +53,9 @@ router.get('/:id', async (req, res) => {
 		return res.status(error.status).send({ error: error.message });
 	}
 });
+
 router.put('/:id/edit', authorization, async (req, res) => {
 	try {
-		console.log(req.body);
 		const { updated } = await UserService.editProfile(
 			req.params.id,
 			req.body
@@ -62,5 +73,4 @@ router.delete('/', authorization, async (req, res) => {
 		return res.status(error.status).send({ error: error.message });
 	}
 });
-
 module.exports = router;

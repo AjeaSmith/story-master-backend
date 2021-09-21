@@ -13,8 +13,9 @@ require('dotenv').config();
 //Set up mongodb connection
 InitalDBServer().catch((err) => console.error(err));
 
-var corsOptions = {
+let corsOptions = {
 	origin: 'http://localhost:3000',
+	credentials: true,
 };
 
 app.use(cors(corsOptions));
