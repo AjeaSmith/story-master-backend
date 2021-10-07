@@ -12,35 +12,35 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-	await StoryService.addStory(req.body.title, req.body.text, req.userId)
+	StoryService.addStory(req.body.title, req.body.text, req.userId)
 		.then(() => {
 			res.status(201).json({
 				message: 'Story added successfully',
 			});
 		})
 		.catch((err) => {
-			res.status(422).json({ errors: [err.errors] });
+			return res.status(err.code).json({ errors: err.message });
 		});
 });
 
 router.delete('/:storyId', async (req, res) => {
-	await StoryService.deleteStory(req.params.storyId)
+	StoryService.deleteStory(req.params.storyId)
 		.then(() => {
 			res.status(200).json({
 				message: 'Story successfully deleted',
 			});
 		})
 		.catch((err) => {
-			res.status(400).json({ error: err });
+			res.status(400).json({ error: 'Could not delete story' });
 		});
-	await StoryService.deleteUserStory(req.userId, req.params.storyId)
+	StoryService.deleteUserStory(req.userId, req.params.storyId)
 		.then(() => {
 			res.status(200).json({
 				message: 'Story successfully deleted',
 			});
 		})
 		.catch((err) => {
-			res.status(400).json({ error: err });
+			res.status(400).json({ error: 'Could not delete story' });
 		});
 });
 module.exports = router;

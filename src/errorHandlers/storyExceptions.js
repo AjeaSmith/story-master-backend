@@ -1,10 +1,12 @@
-function StoriesNotFoundException() {
-	this.status = 200;
-	this.message = 'No stories posted';
+function StoriesNotFoundException(message) {
+	const error = new Error(message);
+	error.code = 404;
+	return error;
 }
-function PostStoryException() {
-	this.status = 400;
-	this.message = 'Could not post story';
+function PostStoryException(message) {
+	const error = new Error(message);
+	error.code = 400;
+	return error;
 }
 module.exports = {
 	StoriesNotFoundException,

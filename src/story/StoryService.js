@@ -5,12 +5,14 @@ const {
 const getAllStories = async () => {
 	const stories = await StoryDAL.getAllStories();
 	if (!stories.length) {
-		throw new StoriesNotFoundException();
+		throw new StoriesNotFoundException('No stories found');
 	}
 	return { data: stories };
 };
 const addStory = async (title, text, profileId) => {
-	await StoryDAL.addStory(title, text, profileId);
+	StoryDAL.addStory(title, text, profileId).catch((err) => {
+		throw new PostStoryException('Could not add story');
+	});
 };
 const deleteStory = async (storyId) => {
 	await StoryDAL.deleteStory(storyId);
