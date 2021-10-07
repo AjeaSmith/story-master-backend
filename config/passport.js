@@ -1,31 +1,37 @@
 const User = require('../src/auth/User');
-const jwtStrategy = require('passport-jwt').Strategy;
-const extractedJWT = require('passport-jwt').ExtractJwt;
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 
-// options to pass in strategy
-const options = {
-	jwtFromRequest: extractedJWT.fromAuthHeaderAsBearerToken(),
-	secretOrKey: process.env.TOKEN_SECRET,
-};
-
-// passport obj is passed in through index.js file
-module.exports = (passport) => {
-	// middleware kicks in when your token needs to be verified before accessing the route
-	passport.use(
-		new jwtStrategy(options, function (jwt_payload, done) {
-			// We will assign the `sub` property on the JWT to the database ID of user
-			User.findOne({ _id: jwt_payload.sub }, function (err, user) {
-				// This flow look familiar?  It is the same as when we implemented
-				// the `passport-local` strategy
-				if (err) {
-					return done(err, false);
-				}
-				if (user) {
-					return done(null, user);
-				} else {
-					return done(null, false);
-				}
-			});
+const verifyCallback = (username, password, done) => {
+	// check for user in DB
+	User.findOne({ username: username })
+		.then(async (user) => {
+			if (!user) return done(null, false);
+			const validPassword = await bcrypt.compare(password, user.password);
+			if (!validPassword) return done(null, false);
+			return done(null, user);
 		})
-	);
+		.catch((err) => {
+			done(err);
+		});
 };
+
+const Localstrategy = new LocalStrategy(verifyCallback);
+
+passport.use(Localstrategy);
+
+passport.serializeUser((user, done) => {
+	// store user id in session
+	done(null, user.id);
+});
+passport.deserializeUser((userId, done) => {
+	// find user and set user to req obj -> req.user to use within your routes
+	User.findById({ _id: userId })
+		.then((user) => {
+			done(null, user);
+		})
+		.catch((err) => {
+			done(err);
+		});
+});

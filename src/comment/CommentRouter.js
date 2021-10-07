@@ -1,10 +1,8 @@
 const express = require('express');
-const { validate } = require('../../middleware/validations');
 const router = express.Router();
 const CommentService = require('./CommentService');
-const { authorization } = require('../../middleware/authorize');
 
-router.post('/:storyId/add', authorization, async (req, res) => {
+router.post('/:storyId/add', async (req, res) => {
 	try {
 		await CommentService.postComment(
 			req.body.message,
@@ -13,11 +11,11 @@ router.post('/:storyId/add', authorization, async (req, res) => {
 		);
 		res.status(201).json({ msg: 'Comment successfully posted' });
 	} catch (error) {
-		console.log('err',error);
+		console.log('err', error);
 		res.status(500).json({ error: error });
 	}
 });
-router.delete('/:storyId', authorization, async (req, res) => {
+router.delete('/:storyId', async (req, res) => {
 	try {
 		await CommentService.deleteComment(req.body.commentId);
 		await CommentService.deleteStoryComment(

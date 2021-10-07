@@ -1,26 +1,27 @@
-function UserExistException() {
-	this.status = 409;
-	this.message = 'User already exists';
+function UserExistException(message) {
+	const error = new Error(message);
+	error.code = 409;
+	return error;
 }
-function UserNotFoundException() {
-	this.status = 404;
-	this.message = 'User not found with credentials';
+function ProfileNotFoundException(message) {
+	const error = new Error(message);
+	error.code = 404;
+	return error;
 }
-function ProfileNotFoundException() {
-	this.status = 404;
-	this.message = 'Profile does not exist';
+function ProfileUpdateException(message) {
+	const error = new Error(message);
+	error.code = 400;
+	return error;
 }
-function ProfileUpdateException() {
-	this.status = 400;
-	this.message = 'Could not update profile';
-}
-function AccountRemoveException() {
-	this.status = 400;
-	this.message = 'Could not remove account';
+function AccountRemoveException(message) {
+	const error = new Error(message);
+	error.code = 400;
+	return error;
+
+	
 }
 module.exports = {
 	UserExistException,
-	UserNotFoundException,
 	ProfileNotFoundException,
 	ProfileUpdateException,
 	AccountRemoveException,

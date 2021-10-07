@@ -1,19 +1,19 @@
 const User = require('./User');
 const Story = require('../story/Story');
+
 const register = async (email, username, password) => {
+	// check if user exists
+	const user = await User.findOne({ email: email });
+	if (user) return { user };
 	const newUser = new User({
-		email: email,
 		username: username,
+		email: email,
 		password: password,
 	});
-	return { user: newUser };
+	newUser.save();
 };
-const login = async (email) => {
-	let userName = await User.findOne({ email: email });
-	return userName;
-};
-const me = async (userId) => {
-	const user = await User.findById({ _id: userId }).populate({
+const me = async (email) => {
+	const user = await User.findOne({ email: email }).populate({
 		path: 'publishedStories',
 	});
 	return user;
@@ -35,7 +35,6 @@ const findByEmail = async (email) => {
 	return user;
 };
 module.exports = {
-	login,
 	register,
 	me,
 	editProfile,

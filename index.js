@@ -1,4 +1,6 @@
 const express = require('express');
+const passport = require('passport');
+const session = require('express-session');
 const app = express();
 const cors = require('cors');
 
@@ -6,7 +8,6 @@ const InitalDBServer = require('./config/db');
 const user = require('./src/auth/UserRouter');
 const story = require('./src/story/StoryRouter');
 const comment = require('./src/comment/CommentRouter');
-const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 
@@ -17,18 +18,32 @@ let corsOptions = {
 	origin: 'http://localhost:3000',
 	credentials: true,
 };
-
+// ------------ Middlewares (General) --------------
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
-// routes
+// ------------  Middleware (Session configuration) ---------------
+app.use(
+	session({
+		secret: process.env.SESSION,
+		resave: false,
+		saveUninitialized: true,
+		cookie: {
+			maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+		},
+	})
+);
+// ----------- Passport Authentication -------------------
+require('./config/passport');
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// ------------- Routes ---------------------
 app.use('/api/user', user);
 app.use('/api/story', story);
 app.use('/api/comment', comment);
-
-// routes
 app.get('/', (req, res) => {
 	res.send('API Working....');
 });

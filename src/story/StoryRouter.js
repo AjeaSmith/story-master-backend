@@ -1,9 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const StoryService = require('./StoryService');
-const { validationResult } = require('express-validator');
-const { authorization } = require('../../middleware/authorize');
-const { addStoryRules, validate } = require('../../middleware/validations');
 
 router.get('/', async (req, res) => {
 	try {
@@ -14,7 +11,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/add', authorization, addStoryRules(), async (req, res) => {
+router.post('/add', async (req, res) => {
 	await StoryService.addStory(req.body.title, req.body.text, req.userId)
 		.then(() => {
 			res.status(201).json({
@@ -26,7 +23,7 @@ router.post('/add', authorization, addStoryRules(), async (req, res) => {
 		});
 });
 
-router.delete('/:storyId', authorization, async (req, res) => {
+router.delete('/:storyId', async (req, res) => {
 	await StoryService.deleteStory(req.params.storyId)
 		.then(() => {
 			res.status(200).json({
