@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // ------------  Middleware (Session configuration) ---------------
 app.use(
 	session({
-		secret: 'process.env.SESSION',
+		secret: process.env.SESSION,
 		resave: false,
 		saveUninitialized: false,
 		cookie: {
@@ -35,7 +35,7 @@ app.use(
 		},
 	})
 );
-app.use(cookieParser('process.env.SESSION'));
+app.use(cookieParser(process.env.SESSION));
 // ----------- Passport Authentication -------------------
 
 app.use(passport.initialize());
