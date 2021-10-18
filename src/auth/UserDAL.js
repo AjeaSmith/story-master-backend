@@ -1,10 +1,10 @@
 const User = require('./User');
 const Story = require('../story/Story');
-
+const { UserExistException } = require('../errorHandlers/userExceptions');
 const register = async (email, username, password) => {
 	// check if user exists
 	const user = await User.findOne({ email: email });
-	if (user) return { user };
+	if (user) throw new UserExistException('User already exists');
 	const newUser = new User({
 		username: username,
 		email: email,

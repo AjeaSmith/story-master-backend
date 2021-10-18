@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const app = express();
 const cors = require('cors');
@@ -26,19 +27,20 @@ app.use(express.urlencoded({ extended: true }));
 // ------------  Middleware (Session configuration) ---------------
 app.use(
 	session({
-		secret: process.env.SESSION,
+		secret: 'process.env.SESSION',
 		resave: false,
-		saveUninitialized: true,
+		saveUninitialized: false,
 		cookie: {
 			maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
 		},
 	})
 );
+app.use(cookieParser('process.env.SESSION'));
 // ----------- Passport Authentication -------------------
-require('./config/passport');
 
 app.use(passport.initialize());
 app.use(passport.session());
+require('./config/passport')(passport);
 
 // ------------- Routes ---------------------
 app.use('/api/user', user);

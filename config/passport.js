@@ -1,37 +1,33 @@
 const User = require('../src/auth/User');
-const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-
-const verifyCallback = (username, password, done) => {
-	// check for user in DB
-	User.findOne({ username: username })
-		.then(async (user) => {
-			if (!user) return done(null, false);
-			const validPassword = await bcrypt.compare(password, user.password);
-			if (!validPassword) return done(null, false);
-			return done(null, user);
+module.exports = function (passport) {
+	passport.use(
+		new LocalStrategy((username, password, done) => {
+			User.findOne({ username: username }, (err, user) => {
+				if (err) throw err;
+				if (!user) return done(null, false);
+				bcrypt.compare(password, user.password, (err, result) => {
+					if (err) throw err;
+					if (result === true) {
+						return done(null, user);
+					} else {
+						return done(null, false);
+					}
+				});
+			});
 		})
-		.catch((err) => {
-			done(err);
+	);
+
+	passport.serializeUser((user, cb) => {
+		cb(null, user.id);
+	});
+	passport.deserializeUser((id, cb) => {
+		User.findOne({ _id: id }, (err, user) => {
+			const userInformation = {
+				username: user.username,
+			};
+			cb(err, userInformation);
 		});
+	});
 };
-
-const Localstrategy = new LocalStrategy(verifyCallback);
-
-passport.use(Localstrategy);
-
-passport.serializeUser((user, done) => {
-	// store user id in session
-	done(null, user.id);
-});
-passport.deserializeUser((userId, done) => {
-	// find user and set user to req obj -> req.user to use within your routes
-	User.findById({ _id: userId })
-		.then((user) => {
-			done(null, user);
-		})
-		.catch((err) => {
-			done(err);
-		});
-});

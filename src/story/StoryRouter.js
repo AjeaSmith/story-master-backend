@@ -24,16 +24,10 @@ router.post('/add', async (req, res) => {
 });
 
 router.delete('/:storyId', async (req, res) => {
-	StoryService.deleteStory(req.params.storyId)
-		.then(() => {
-			res.status(200).json({
-				message: 'Story successfully deleted',
-			});
-		})
-		.catch((err) => {
-			res.status(400).json({ error: 'Could not delete story' });
-		});
-	StoryService.deleteUserStory(req.userId, req.params.storyId)
+	Promise.all([
+		StoryService.deleteStory(req.params.storyId),
+		StoryService.deleteUserStory(req.userId, req.params.storyId),
+	])
 		.then(() => {
 			res.status(200).json({
 				message: 'Story successfully deleted',

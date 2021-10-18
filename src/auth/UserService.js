@@ -2,21 +2,13 @@ const UserDataAccess = require('./UserDAL');
 const {
 	ProfileNotFoundException,
 	ProfileUpdateException,
-	UserExistException,
 	AccountRemoveException,
 } = require('../errorHandlers/userExceptions');
 const bcrypt = require('bcryptjs');
 
 const register = async (email, username, password) => {
 	let hashPassword = await bcrypt.hash(password, 12);
-	const { user } = await UserDataAccess.register(
-		email,
-		username,
-		hashPassword
-	);
-	if (user) {
-		throw new UserExistException('User already exists');
-	}
+	await UserDataAccess.register(email, username, hashPassword);
 };
 const getProfile = async (email) => {
 	const profile = await UserDataAccess.me(email);
