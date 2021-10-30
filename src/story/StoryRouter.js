@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const StoryService = require('./StoryService');
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 router.get('/', async (req, res) => {
 	try {
@@ -11,8 +12,8 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/add', async (req, res) => {
-	StoryService.addStory(req.body.title, req.body.text, req.userId)
+router.post('/add', isAuthenticated, async (req, res) => {
+	StoryService.addStory(req.body.title, req.body.text, req.user.id)
 		.then(() => {
 			res.status(201).json({
 				message: 'Story added successfully',
@@ -22,7 +23,17 @@ router.post('/add', async (req, res) => {
 			return res.status(err.code).json({ errors: err.message });
 		});
 });
-
+router.get('/:storyId', async (req, res) => {
+	StoryService.getStoryById(req.params.storyId)
+		.then((data) => {
+			res.status(200).json({
+				story: data,
+			});
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
 router.delete('/:storyId', async (req, res) => {
 	Promise.all([
 		StoryService.deleteStory(req.params.storyId),

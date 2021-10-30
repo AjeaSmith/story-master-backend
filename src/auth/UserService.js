@@ -1,7 +1,6 @@
 const UserDataAccess = require('./UserDAL');
 const {
 	ProfileNotFoundException,
-	ProfileUpdateException,
 	AccountRemoveException,
 } = require('../errorHandlers/userExceptions');
 const bcrypt = require('bcryptjs');
@@ -10,27 +9,23 @@ const register = async (email, username, password) => {
 	let hashPassword = await bcrypt.hash(password, 12);
 	await UserDataAccess.register(email, username, hashPassword);
 };
-const getProfile = async (email) => {
-	const profile = await UserDataAccess.me(email);
+const getProfile = async (id) => {
+	const profile = await UserDataAccess.me(id);
 	if (!profile) {
 		throw new ProfileNotFoundException('Profile does not exist');
 	}
 	return profile;
 };
 const editProfile = async (profileId, data) => {
-	const updatedProfile = await UserDataAccess.editProfile(profileId, data);
-	if (!updatedProfile) {
-		throw new ProfileUpdateException('Could not update profile');
-	}
-	return updatedProfile;
+	await UserDataAccess.editProfile(profileId, data);
 };
 const disableAccount = async (userId) => {
 	const user = await UserDataAccess.disableAccount(userId);
 	const story = await UserDataAccess.deleteAssociatedStories(userId);
-	if (!user || story) {
+	if (user && story) {
 		throw new AccountRemoveException('Could not remove account');
 	}
-	return { message: 'Account successfully disabled' };
+	return;
 };
 module.exports = {
 	register,

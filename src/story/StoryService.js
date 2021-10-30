@@ -9,6 +9,10 @@ const getAllStories = async () => {
 	}
 	return { data: stories };
 };
+const getStoryById = async (id) => {
+	const story = await StoryDAL.getStory(id);
+	return story;
+};
 const addStory = async (title, text, profileId) => {
 	StoryDAL.addStory(title, text, profileId).catch((err) => {
 		throw new PostStoryException('Could not add story');
@@ -22,6 +26,7 @@ const deleteUserStory = async (authorId, storyId) => {
 };
 module.exports = {
 	getAllStories,
+	getStoryById,
 	addStory,
 	deleteStory,
 	deleteUserStory,

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const UserService = require('./UserService');
+const isAuthenticated = require('../middleware/isAuthenticated');
 
 router.post('/register', (req, res, next) => {
 	const { email, username, password } = req.body;
@@ -23,20 +24,23 @@ router.post('/login', passport.authenticate('local'), (req, res, next) => {
 	});
 });
 router.get('/authenticated', async (req, res) => {
-	res.send({ authenticated: req.isAuthenticated() });
-	console.log('from authenticated', req.isAuthenticated());
+	if (req.isAuthenticated()) {
+		res.send({ authenticated: req.isAuthenticated(), user: req.user });
+	} else {
+		res.send({ authenticated: req.isAuthenticated() });
+	}
+	console.log('authenticated', req.isAuthenticated());
+	console.log(req.user);
 });
 router.get('/logout', (req, res) => {
 	req.session.destroy(function (err) {
 		// cannot access session here
 		if (err) return console.log(err);
-		console.log('session destroyed');
 	});
-	res.send({ msg: 'Successfully logged out' });
+	res.send({ authenticated: req.isAuthenticated() });
 });
-
-router.get('/:email', async (req, res) => {
-	UserService.getProfile(req.params.email)
+router.get('/:id', async (req, res) => {
+	UserService.getProfile(req.params.id)
 		.then((profile) => {
 			res.status(200).json(profile);
 		})
@@ -44,19 +48,23 @@ router.get('/:email', async (req, res) => {
 			return res.status(error.code).send({ error: error.message });
 		});
 });
-router.put('/:id/edit', async (req, res) => {
+router.put('/:id/edit', isAuthenticated, async (req, res) => {
 	UserService.editProfile(req.params.id, req.body)
-		.then((updatedProfile) => {
-			res.status(200).json({ profile: updatedProfile });
+		.then(() => {
+			res.status(200).json({ message: 'updated successfully' });
 		})
 		.catch((err) => {
 			return res.status(err.code).send({ error: err.message });
 		});
 });
-router.delete('/', async (req, res) => {
-	UserService.disableAccount(req.userId)
-		.then((message) => {
-			res.status(200).json({ message });
+router.delete('/:id', isAuthenticated, async (req, res) => {
+	UserService.disableAccount(req.params.id)
+		.then(() => {
+			res.status(200).json({ message: 'Account successfully disabled' });
+			req.session.destroy(function (err) {
+				// cannot access session here
+				if (err) return console.log(err);
+			});
 		})
 		.catch((err) => {
 			return res.status(err.code).send({ error: err.message });

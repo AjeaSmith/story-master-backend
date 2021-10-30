@@ -1,7 +1,7 @@
 const Comment = require('./Comment');
 const Story = require('../story/Story');
 
-const postComment = async (message, authorId, storyId) => {
+const postComment = async (storyId, message, authorId) => {
 	const newComment = new Comment({
 		message,
 		author: authorId,

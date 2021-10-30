@@ -4,10 +4,8 @@ const User = require('../auth/User');
 const getAllStories = async () => {
 	const stories = await Story.find({})
 		.populate('author', '_id username')
-		.populate({
-			path: 'comments',
-			populate: { path: 'author', select: 'username' },
-		});
+		.sort({ createdAt: -1 });
+
 	return stories;
 };
 
@@ -20,6 +18,16 @@ const addStory = async (title, text, userId) => {
 
 	await user.save();
 };
+const getStory = async (id) => {
+	const story = await Story.findById(id)
+		.populate('author', '_id username')
+		.populate({
+			path: 'comments',
+			populate: { path: 'author', select: 'username' },
+		});
+	return story;
+};
+const editStory = async (id, data) => {};
 
 const deleteStory = async (storyID) => {
 	await Story.deleteOne({ _id: storyID });
@@ -37,4 +45,5 @@ module.exports = {
 	addStory,
 	deleteStory,
 	deleteUserStory,
+	getStory,
 };

@@ -12,23 +12,22 @@ const register = async (email, username, password) => {
 	});
 	newUser.save();
 };
-const me = async (email) => {
-	const user = await User.findOne({ email: email }).populate({
+const me = async (id) => {
+	const user = await User.findOne({ _id: id }).populate({
 		path: 'publishedStories',
+		populate: { path: 'author', select: 'username' },
 	});
+
 	return user;
 };
 const editProfile = async (userId, data) => {
-	const updatedProfile = await User.findByIdAndUpdate({ _id: userId }, data);
-	return updatedProfile;
+	await User.findByIdAndUpdate({ _id: userId }, data);
 };
 const disableAccount = async (userId) => {
-	const account = await User.findByIdAndDelete(userId);
-	return account;
+	await User.findByIdAndDelete(userId);
 };
 const deleteAssociatedStories = async (userId) => {
-	const stories = await Story.findOneAndDelete({ author: userId });
-	return stories;
+	await Story.findOneAndDelete({ author: userId });
 };
 const findByEmail = async (email) => {
 	const user = await User.findOne({ email });

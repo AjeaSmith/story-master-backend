@@ -8,21 +8,14 @@ function ProfileNotFoundException(message) {
 	error.code = 404;
 	return error;
 }
-function ProfileUpdateException(message) {
-	const error = new Error(message);
-	error.code = 400;
-	return error;
-}
+
 function AccountRemoveException(message) {
 	const error = new Error(message);
 	error.code = 400;
 	return error;
-
-	
 }
 module.exports = {
 	UserExistException,
 	ProfileNotFoundException,
-	ProfileUpdateException,
 	AccountRemoveException,
 };
