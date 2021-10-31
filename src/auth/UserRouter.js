@@ -14,7 +14,12 @@ router.post('/register', (req, res, next) => {
 			res.status(err.code).send({ error: err.message });
 		});
 });
-router.post('/login', passport.authenticate('local'), (req, res, next) => {
+router.post('/login', passport.authenticate('local'), (err, req, res, next) => {
+	// console.log('the user', req.user);
+	// console.log('the error', err);
+	if (err) {
+		console.log(err);
+	}
 	req.login(req.user, (err) => {
 		if (err) return console.log(err);
 		res.send({
@@ -30,7 +35,7 @@ router.get('/authenticated', async (req, res) => {
 		res.send({ authenticated: req.isAuthenticated() });
 	}
 	console.log('authenticated', req.isAuthenticated());
-	console.log(req.user);
+	console.log(req.session);
 });
 router.get('/logout', (req, res) => {
 	req.session.destroy(function (err) {
