@@ -14,12 +14,7 @@ router.post('/register', (req, res, next) => {
 			res.status(err.code).send({ error: err.message });
 		});
 });
-router.post('/login', passport.authenticate('local'), (err, req, res, next) => {
-	// console.log('the user', req.user);
-	// console.log('the error', err);
-	if (err) {
-		console.log(err);
-	}
+router.post('/login', passport.authenticate('local'), (req, res) => {
 	req.login(req.user, (err) => {
 		if (err) return console.log(err);
 		res.send({
