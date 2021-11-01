@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // ------------  Middleware (Session configuration) ---------------
+app.set('trust proxy', 1);
 app.use(
 	session({
 		secret: process.env.SESSION,
