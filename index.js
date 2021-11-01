@@ -17,7 +17,7 @@ require('dotenv').config();
 InitalDBServer().catch((err) => console.error(err));
 
 let corsOptions = {
-	origin: 'https://story-master-elite.netlify.app',
+	origin: 'https://story-master-elite.netlify.app/',
 	credentials: true,
 };
 // ------------ Middlewares (General) --------------
