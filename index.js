@@ -17,7 +17,7 @@ require('dotenv').config();
 InitalDBServer().catch((err) => console.error(err));
 
 let corsOptions = {
-	origin: '*',
+	origin: 'http://localhost:3000',
 	credentials: true,
 };
 // ------------ Middlewares (General) --------------
