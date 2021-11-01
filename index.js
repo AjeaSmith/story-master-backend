@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const app = express();
 const cors = require('cors');
+const MongoStore = require('connect-mongo');
 
 const InitalDBServer = require('./config/db');
 const user = require('./src/auth/UserRouter');
@@ -16,11 +17,11 @@ require('dotenv').config();
 InitalDBServer().catch((err) => console.error(err));
 
 let corsOptions = {
-	origin: 'http://localhost:3000',
+	origin: '*',
 	credentials: true,
 };
 // ------------ Middlewares (General) --------------
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -31,7 +32,13 @@ app.use(
 		secret: process.env.SESSION,
 		resave: false,
 		saveUninitialized: false,
+		store: MongoStore.create({
+			mongoUrl: `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@story-master-cluster.b6bqf.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
+		}),
 		cookie: {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'none',
 			maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
 		},
 	})
@@ -51,4 +58,4 @@ app.get('/', (req, res) => {
 });
 
 const port = process.env.PORT || 8080;
-app.listen(8080, () => console.log('server started...'));
+app.listen(port, () => console.log('server started...'));
